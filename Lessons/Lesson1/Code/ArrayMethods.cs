@@ -13,8 +13,8 @@ public static class ArrayMethods<T> where T: IComparable<T>{
         }
         return -1; //ToDo...
     }
-    //    {3, 6, 5, 0, 9, 8, 1, 4, 2 ,7}
-    //idx: 0, 1, 2, 3, 4, 5, 6, 7, 8 ,9
+    //    {3, 6, 5, 0, 9, 8, 1, 4, 2, 7}
+    //idx: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9
 
     /*
     // swap(0, 9) {7, 6, 5, 0, 9, 8, 1, 4, 2 ,3}
