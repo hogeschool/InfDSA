@@ -374,7 +374,7 @@ static void BubbleSort(int[] arr) {
         }
         n--;
     }
-    while(swapped); // while(n > 0); => NOT Adaptive!
+    while(swapped); // while(n >= 2); => NOT Adaptive!
 }
 
 static void InsertionSort(int[] arr) {

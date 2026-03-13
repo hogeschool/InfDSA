@@ -4,7 +4,7 @@ using System.Data;
 using System.Diagnostics;
 
 Stopwatch stopwatch = new Stopwatch();
-/*
+
 //Stability
 Console.WriteLine("\nInput Array:");
 Student[] studentArray = {  new Student("Dave",'A'), 
@@ -40,7 +40,7 @@ System.Console.WriteLine("\n---selectionSortBy Name -> (by) Section-------");
 SelectionSortBy(studentArray, selectSection);
 studentArray.ToList().ForEach(_ => System.Console.Write($"{_} \n"));
 System.Console.WriteLine("\n");
-*/
+
 
 
 

@@ -94,7 +94,7 @@ public static class Sorting<T> where T : IComparable<T>
 			}	
 			n--;
 		}
-		while(swapped); // while(n > 0); => NOT Adaptive!
+		while(swapped); // while(n >= 2); => NOT Adaptive!
 	}
 
     public static void BubbleSortBy<R>(T[] array, Func<T, R> keySelector) where R : IComparable<R>
@@ -117,7 +117,7 @@ public static class Sorting<T> where T : IComparable<T>
 		  }	
 		  n--;
 		}
-		while(n >= 2);//(swapped); // while(n > 0); => NOT Adaptive!
+		while(swapped); // while(n >= 2); => NOT Adaptive!
 	}
  
 	public static void MergeSort(T[] array, int p, int r)
