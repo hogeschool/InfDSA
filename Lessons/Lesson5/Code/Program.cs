@@ -4,7 +4,7 @@ using System.Data;
 using System.Diagnostics;
 
 Stopwatch stopwatch = new Stopwatch();
-/*
+
 //Stability
 Console.WriteLine("\nInput Array:");
 Student[] studentArray = {  new Student("Dave",'A'), 
@@ -29,7 +29,7 @@ System.Console.WriteLine("\n------Linq---------OrderBy(_ => _.Section)--- => ---
 orderedStudentArray = studentArray.OrderBy(_ => _.Section).ThenBy(_ => _.Name).ToArray();
 orderedStudentArray.ToList().ForEach(_ => System.Console.Write($"{_} \n"));
 
-//Using SelectionSortBy:
+//using SelectionSortBy:
 System.Console.WriteLine("\n----selectionSortBy Name------");
 Func<Student, string> selectName = a => a.Name;
 Func<Student, char> selectSection= a => a.Section;
@@ -40,24 +40,35 @@ System.Console.WriteLine("\n---selectionSortBy Name -> (by) Section-------");
 SelectionSortBy(studentArray, selectSection);
 studentArray.ToList().ForEach(_ => System.Console.Write($"{_} \n"));
 System.Console.WriteLine("\n");
-*/
+
+//using MergeSortBy:
+System.Console.WriteLine("\n----MergeSortBy Name------");
+Func<Student, string> selectName_ = a => a.Name;
+Func<Student, char> selectSection_= a => a.Section;
+OrderBy(studentArray, selectName);
+studentArray.ToList().ForEach(_ => System.Console.Write($"{_} \n"));
+
+System.Console.WriteLine("\n---MergeSortBy Name -> (by) Section-------");                  
+OrderBy(studentArray, selectSection);
+studentArray.ToList().ForEach(_ => System.Console.Write($"{_} \n"));
+System.Console.WriteLine("\n");
 
 
+System.Console.WriteLine();
 
 int k = 4;
 int n = k * 8000;
 Random rnd = new Random();
-bool ordered = true;
+bool ordered = false; //true;
 int[] unorderedArray = GenerateArray(n, ordered);
 
 System.Console.WriteLine($"\n is array ordered: {isOrdered(unorderedArray)}");
 System.Console.WriteLine("\n---selectionSort---");
 stopwatch.Start();                  
-Sorting<int>.SelectionSort(unorderedArray);
+Sorting<int>.SelectionSortBy(unorderedArray, _ => _);
 stopwatch.Stop();
 System.Console.WriteLine($"n: {n} Time elapsed: {stopwatch.Elapsed}\n");
 //unorderedArray.ToList().ForEach(_ => System.Console.Write($"{_} \n"));
-System.Console.WriteLine("\n");
 
 unorderedArray = GenerateArray(n, ordered);
 
@@ -66,11 +77,10 @@ System.Console.WriteLine("\n---insertionSort---");
 
 stopwatch.Reset(); 
 stopwatch.Start();                  
-Sorting<int>.InsertionSort(unorderedArray);
+Sorting<int>.InsertionSortBy(unorderedArray, _ => _);
 stopwatch.Stop();
 System.Console.WriteLine($"n: {n} Time elapsed: {stopwatch.Elapsed}\n");
 //unorderedArray.ToList().ForEach(_ => System.Console.Write($"{_} \n"));
-System.Console.WriteLine("\n");
 
 unorderedArray = GenerateArray(n, ordered);
 
@@ -78,7 +88,39 @@ System.Console.WriteLine($"\n is array ordered: {isOrdered(unorderedArray)}");
 System.Console.WriteLine("\n---bubbleSort---");
 stopwatch.Reset(); 
 stopwatch.Start();                  
-Sorting<int>.BubbleSort(unorderedArray);
+Sorting<int>.BubbleSortBy(unorderedArray, _ => _);
+stopwatch.Stop();
+System.Console.WriteLine($"n: {n} Time elapsed: {stopwatch.Elapsed}\n");
+//unorderedArray.ToList().ForEach(_ => System.Console.Write($"{_} \n"));
+
+unorderedArray = GenerateArray(n, ordered);
+
+System.Console.WriteLine($"\n is array ordered: {isOrdered(unorderedArray)}");
+System.Console.WriteLine($"\n---MergeSort--- log2(n) = {Math.Log2(n)}");
+stopwatch.Reset(); 
+stopwatch.Start();                  
+Sorting<int>.MergeSort(unorderedArray, 0, unorderedArray.Length - 1);
+stopwatch.Stop();
+System.Console.WriteLine($"n: {n} Time elapsed: {stopwatch.Elapsed}\n");
+//unorderedArray.ToList().ForEach(_ => System.Console.Write($"{_} \n"));
+
+unorderedArray = GenerateArray(n, ordered);
+
+System.Console.WriteLine($"\n is array ordered: {isOrdered(unorderedArray)}");
+System.Console.WriteLine($"\n---Split--- log2(n) = {Math.Log2(n)}");
+stopwatch.Reset(); 
+stopwatch.Start();                  
+Split(unorderedArray, 0, unorderedArray.Length - 1);
+stopwatch.Stop();
+System.Console.WriteLine($"n: {n} Time elapsed: {stopwatch.Elapsed}\n");
+//unorderedArray.ToList().ForEach(_ => System.Console.Write($"{_} \n"));
+System.Console.WriteLine("\n");
+
+System.Console.WriteLine($"\n is array ordered: {isOrdered(unorderedArray)}");
+System.Console.WriteLine($"\n---MergeSortBy--- log2(n) = {Math.Log2(n)}");
+stopwatch.Reset(); 
+stopwatch.Start();                  
+Sorting<int>.MergeSortBy(unorderedArray,  _ => _);
 stopwatch.Stop();
 System.Console.WriteLine($"n: {n} Time elapsed: {stopwatch.Elapsed}\n");
 //unorderedArray.ToList().ForEach(_ => System.Console.Write($"{_} \n"));
@@ -96,34 +138,198 @@ static int[] GenerateArray(int n, bool ordered = true) {
     .ToArray() 
     ;
 }
-//  0   1   2   3
-//{56, 45, 11, 89}
+
+// //                   [0...7]
+// //         [0...3]            //[4...7]
+// //   [0...1]      [2...3]           //[4...5]     //[6..7]
+// // [0]     [1]  [2]     [3]         //[4]   //[5]    //[6] //[7]
+
+static void Split<T>(T[] arr, int low, int high) where T : IComparable<T> {
+   
+   int middle = (low + high) / 2;
+
+   if(low >= high) return;      //Base Case
   
-static void SelectionSort__<T>(T[] array) where T : IComparable<T>{
+   //Divide: 
+   Split(arr, low, middle);         //LEFT PART
+   Split(arr, middle + 1, high);    //RIGHT PART 
+   
+   //Conquer:
+     //Create a Left and Right partitions from the array at the moment (from low to high)
+   T[] left = new T[middle - low + 1];
+   T[] right = new T[high - middle];
+
+   for(int i = 0; i < middle - low + 1; ++i){
+      left[i] = arr[low + i];
+   }
+
+   for(int j = 0; j < high - middle; ++j){
+      right[j] = arr[middle + 1 + j];
+   }
+      
+     //Combine/Merge the two partitions
+   var sortedSubArray = Combine(left, right);
+     //change the values of arr accordingly, from low to high
+   for(int idx = 0; idx <= high - low; ++idx)
+   {
+      arr[low + idx] = sortedSubArray[idx];
+   }
+}
+
+static T[] Combine<T>(T[] left, T[] right) where T : IComparable<T> {
+    
+    if(left == null || left.Length == 0) return right;
+    if(right == null || right.Length == 0) return left;
+    int size = left.Length + right.Length;
+    T[] res = new T[size];
+
+    int i = 0;
+    int j = 0;
+
+    for(int idx = 0; idx < res.Length; idx++) {
+      if(i < left.Length && j < right.Length) {
+        if(left[i].CompareTo(right[j]) <= 0){ 
+          res[idx] = left[i++];
+        }
+        else 
+          res[idx] = right[j++];
+      }
+      else if(j >= right.Length)
+        res[idx] = left[i++];
+      else 
+        res[idx] = right[j++];
+    }
+    return res;
+}
+
+
+static void MergeSort<T>(T[] array, int p, int r) where T : IComparable<T>
+{
   if(array == null || array.Length <= 1) return;
 
-  for(int startIndex = 0; startIndex <= array.Length - 2; ++startIndex)
-  {
-    //Find minimumIndex from startIndex
+  if(p >= r) return;
+   
+  int q = (p + r)/2;
+  MergeSort(array, p, q);
+  MergeSort(array, q + 1, r);
+  Merge(array, p, q, r); 
+}
 
-    int minimumIndex = startIndex;
-    for(int idx = startIndex + 1; idx < array.Length; ++idx)
-    {
-      if(array[idx].CompareTo(array[minimumIndex]) < 0)
-      {
-        minimumIndex = idx;
-      }
-    }
-    
-    //if(minimumIndex != startIndex) => swap(array, minimumIndex, startIndex)
-    if(minimumIndex != startIndex)
-    {
-      T tmp = array[minimumIndex];
-      array[minimumIndex] = array[startIndex];
-      array[startIndex] = tmp;
-    }
+static void Merge<T>(T[] array, int p, int q, int r) where T : IComparable<T>
+{
+  //left idx from p to q
+  //size: q - p + 1
+  T[] left = new T[q - p + 1];
+  //right idx from q + 1 to r
+  //size: r - (q + 1) + 1 => r - q, size(p,r) - size(left) = r - p + 1 - (q - p + 1) => r - q
+  T[] right = new T[r - q];
+
+  //Copying elements from idx p to r (original array) into left partition 
+  for(int i = 0; i < left.Length; ++i)
+  {
+    left[i] = array[p + i];
   }
-    
+
+  for(int j = 0; j < right.Length; ++j)
+  {
+    right[j] = array[q + 1 + j];
+  }
+
+  //Merge
+  int leftIdx = 0, rightIdx = 0;
+  int arrIdx = p;
+  while( leftIdx < left.Length && rightIdx < right.Length)
+  {
+    if(left[leftIdx].CompareTo(right[rightIdx]) <= 0)
+    {
+      array[arrIdx++] = left[leftIdx];
+      leftIdx++;
+    }
+    else
+    {
+      array[arrIdx++] = right[rightIdx];
+      rightIdx++;
+    } 
+  }
+
+  while( leftIdx < left.Length)
+  {
+    array[arrIdx++] = left[leftIdx];
+    leftIdx++;
+  } 
+  
+  while(rightIdx < right.Length)
+  {
+    array[arrIdx++] = right[rightIdx];
+    rightIdx++;
+  } 
+  
+}
+
+static void OrderBy<T, R>(T[] array, Func<T, R> keySelector) 
+         where R : IComparable<R> => MergeSortBy(array, 0, array.Length - 1, keySelector);
+
+static void MergeSortBy<T, R>(T[] array, int p, int r, Func<T, R> keySelector) where R : IComparable<R>
+{
+  if(array == null || array.Length <= 1) return;
+
+  if(p >= r) return;
+   
+  int q = (p + r)/2;
+  MergeSortBy(array, p, q, keySelector);
+  MergeSortBy(array, q + 1, r, keySelector);
+  MergeBy(array, p, q, r, keySelector);
+}
+
+static void MergeBy<T, R>(T[] array, int p, int q, int r, Func<T, R> keySelector) where R : IComparable<R>
+{
+  //left idx from p to q
+  //size: q - p + 1
+  T[] left = new T[q - p + 1];
+  //right idx from q + 1 to r
+  //size: r - (q + 1) + 1 => r - q, size(p,r) - size(left) = r - p + 1 - (q - p + 1) => r - q
+  T[] right = new T[r - q];
+
+  //Copying elements from idx p to r (original array) into left partition 
+  for(int i = 0; i < left.Length; ++i)
+  {
+    left[i] = array[p + i];
+  }
+
+  for(int j = 0; j < right.Length; ++j)
+  {
+    right[j] = array[q + 1 + j];
+  }
+
+  //Merge
+  int leftIdx = 0, rightIdx = 0;
+  int arrIdx = p;
+  while( leftIdx < left.Length && rightIdx < right.Length)
+  {
+    if(keySelector(left[leftIdx]).CompareTo(keySelector(right[rightIdx])) <= 0)
+    {
+      array[arrIdx++] = left[leftIdx];
+      leftIdx++;
+    }
+    else
+    {
+      array[arrIdx++] = right[rightIdx];
+      rightIdx++;
+    } 
+  }
+
+  while( leftIdx < left.Length)
+  {
+    array[arrIdx++] = left[leftIdx];
+    leftIdx++;
+  } 
+  
+  while(rightIdx < right.Length)
+  {
+    array[arrIdx++] = right[rightIdx];
+    rightIdx++;
+  } 
+  
 }
 
 static void SelectionSort<T>(T[] array) where T : IComparable<T>{
@@ -168,7 +374,7 @@ static void BubbleSort(int[] arr) {
         }
         n--;
     }
-    while(swapped); // while(n >= 2); => NOT Adaptive!
+    while(swapped); // while(n > 0); => NOT Adaptive!
 }
 
 static void InsertionSort(int[] arr) {
@@ -252,8 +458,6 @@ static void SelectionSortBy<T, R>(T[] array, Func<T, R> keySelector)
     }
 }
 
-
-
 //Search
 static int SequentialSearch<T>(T[] array, T key) where T : IComparable<T>
 {
@@ -288,7 +492,7 @@ static int LinSearch<T>(T[] array, T key) where T : IComparable<T>
 
 static int LinSearch_<T>(T[] array, T key) where T : IComparable<T> => LinSearchRec(array, 0, key);
 
-static int LinSearchRec<T>(T[] array, int idx,T key) where T : IComparable<T> =>
+static int LinSearchRec<T>(T[] array, int idx, T key) where T : IComparable<T> =>
      idx == array.Length ? -1 :
      array[idx].CompareTo(key) == 0 ? idx : 
      LinSearchRec<T>(array, idx + 1, key);
@@ -312,6 +516,16 @@ static bool isOrdered<T>(T[] array) where T:IComparable<T>
     ordered = array[i].CompareTo(array[i + 1]) <= 0; // array[i] <= array[i + 1]
   }
 
+  return ordered;
+}
+
+static bool isOrderedBy<T, R>(T[] array, Func<T, R> keySelector) where R : IComparable<R>
+{
+  bool ordered = true;
+  for(int i = 0; ordered && i < array.Length - 1; ++i)
+  {
+    ordered = keySelector(array[i]).CompareTo(keySelector(array[i + 1])) <= 0;
+  }
   return ordered;
 }
 

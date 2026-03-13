@@ -48,7 +48,7 @@ public static class Sorting<T> where T : IComparable<T>
 			}	
 			n--;
 		}
-		while(swapped);//(n > 0);
+		while(swapped); // while(n >= 2); => NOT Adaptive!
 	}
 	
 	public static void Swap(T[] array, int i, int j)
@@ -69,8 +69,8 @@ public static class Sorting<T> where T : IComparable<T>
 		if(array == null || array.Length <= 1 || 
 		   start < 0 || start >= array.Length)
 			 return -1;
-	    if(start == array.Length - 1) return array.Length - 1;
-		
+		if(start == array.Length - 1) return array.Length - 1;
+
 		int minIdx = start;
 		T tmpMin = array[minIdx];
 		for(int i = start + 1; i < array.Length; ++i)
