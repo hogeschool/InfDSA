@@ -63,7 +63,7 @@ bool ordered = false; //true;
 int[] unorderedArray = GenerateArray(n, ordered);
 
 System.Console.WriteLine($"\n is array ordered: {isOrdered(unorderedArray)}");
-System.Console.WriteLine("\n---selectionSort---");
+System.Console.WriteLine("\n---SelectionSort---");
 stopwatch.Start();                  
 Sorting<int>.SelectionSortBy(unorderedArray, _ => _);
 stopwatch.Stop();
@@ -73,7 +73,7 @@ System.Console.WriteLine($"n: {n} Time elapsed: {stopwatch.Elapsed}\n");
 unorderedArray = GenerateArray(n, ordered);
 
 System.Console.WriteLine($"\n is array ordered: {isOrdered(unorderedArray)}");
-System.Console.WriteLine("\n---insertionSort---");
+System.Console.WriteLine("\n---InsertionSort---");
 
 stopwatch.Reset(); 
 stopwatch.Start();                  
@@ -85,10 +85,21 @@ System.Console.WriteLine($"n: {n} Time elapsed: {stopwatch.Elapsed}\n");
 unorderedArray = GenerateArray(n, ordered);
 
 System.Console.WriteLine($"\n is array ordered: {isOrdered(unorderedArray)}");
-System.Console.WriteLine("\n---bubbleSort---");
+System.Console.WriteLine("\n---BubbleSort---");
 stopwatch.Reset(); 
 stopwatch.Start();                  
 Sorting<int>.BubbleSortBy(unorderedArray, _ => _);
+stopwatch.Stop();
+System.Console.WriteLine($"n: {n} Time elapsed: {stopwatch.Elapsed}\n");
+//unorderedArray.ToList().ForEach(_ => System.Console.Write($"{_} \n"));
+
+unorderedArray = GenerateArray(n, ordered);
+
+System.Console.WriteLine($"\n is array ordered: {isOrdered(unorderedArray)}");
+System.Console.WriteLine("\n---BubbleSortAlternative---");
+stopwatch.Reset(); 
+stopwatch.Start();                  
+BubbleSort_Alternative(unorderedArray);
 stopwatch.Stop();
 System.Console.WriteLine($"n: {n} Time elapsed: {stopwatch.Elapsed}\n");
 //unorderedArray.ToList().ForEach(_ => System.Console.Write($"{_} \n"));
@@ -415,6 +426,30 @@ static void BubbleSort<T>(T[] arr) where T : IComparable<T> {
         n--;
     }
     while(swapped); // while(n >= 2); => NOT Adaptive!
+}
+
+static void BubbleSort_Alternative<T>(T[] arr) where T : IComparable<T> {
+
+  for (int outerLoops = 0; outerLoops < arr.Length - 1; outerLoops++)
+  {
+    bool swapped = false;
+
+    for (int j = 0; j < arr.Length - 1 - outerLoops; j++)
+    {
+      if (arr[j].CompareTo(arr[j + 1]) > 0) //arr[j] > arr[j + 1]
+      {
+        //swap(arr, i, j)
+        T temp = arr[j];
+        arr[j] = arr[j + 1];
+        arr[j + 1] = temp;
+        swapped = true;
+      }
+    }
+
+    if (!swapped) //no swaps happened => array already sorted!
+      return;
+  }
+
 }
 
 static void InsertionSort<T>(T[] arr) where T : IComparable<T> {
