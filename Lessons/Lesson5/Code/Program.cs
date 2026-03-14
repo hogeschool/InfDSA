@@ -355,7 +355,7 @@ static void SelectionSort<T>(T[] array) where T : IComparable<T>{
     }
 }
 
-static void BubbleSort(int[] arr) {
+static void BubbleSortInt(int[] arr) {
     if(arr== null || arr.Length <= 1) return;
     bool swapped = false;
     int n = arr.Length;
@@ -377,7 +377,7 @@ static void BubbleSort(int[] arr) {
     while(swapped); // while(n >= 2); => NOT Adaptive!
 }
 
-static void InsertionSort(int[] arr) {
+static void InsertionSortInt(int[] arr) {
     if(arr== null || arr.Length <= 1) return;
 
     for(int j = 1; j <= arr.Length - 1; ++j){
@@ -393,6 +393,47 @@ static void InsertionSort(int[] arr) {
 
     }
 }
+
+static void BubbleSort<T>(T[] arr) where T : IComparable<T> {
+    if(arr== null || arr.Length <= 1) return;
+    bool swapped = false;
+    int n = arr.Length;
+    do{
+        swapped = false;
+        for(int i = 0; i <= n - 2; ++i){ 
+           if(arr[i].CompareTo(arr[i + 1]) > 0) //arr[i] > arr[i + 1]
+           {    
+            //----swap:-----
+            var temp = arr[i + 1];
+            arr[i + 1] = arr[i];
+            arr[i] = temp;
+            //--------------
+            swapped = true;
+           }
+
+        }
+        n--;
+    }
+    while(swapped); // while(n >= 2); => NOT Adaptive!
+}
+
+static void InsertionSort<T>(T[] arr) where T : IComparable<T> {
+    if(arr== null || arr.Length <= 1) return;
+
+    for(int j = 1; j <= arr.Length - 1; ++j){
+        
+        T key = arr[j];
+        int i = j - 1;
+
+        while(i >= 0 && arr[i].CompareTo(key) > 0){
+            arr[i + 1] = arr[i];
+            i--;
+        }
+        arr[i + 1] = key;
+
+    }
+}
+
 
 static void SelectionSort_<T>(T[] array) where T : IComparable<T>{
     if(array == null || array.Length == 0) return;
