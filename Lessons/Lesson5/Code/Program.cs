@@ -235,12 +235,13 @@ static void Merge<T>(T[] array, int p, int q, int r) where T : IComparable<T>
   //size: r - (q + 1) + 1 => r - q, size(p,r) - size(left) = r - p + 1 - (q - p + 1) => r - q
   T[] right = new T[r - q];
 
-  //Copying elements from idx p to r (original array) into left partition 
+  //Copying elements from idx p to q (original array) into left partition 
   for(int i = 0; i < left.Length; ++i)
   {
     left[i] = array[p + i];
   }
 
+  //Copying elements from idx q + 1 to r (original array) into right partition 
   for(int j = 0; j < right.Length; ++j)
   {
     right[j] = array[q + 1 + j];
@@ -301,12 +302,13 @@ static void MergeBy<T, R>(T[] array, int p, int q, int r, Func<T, R> keySelector
   //size: r - (q + 1) + 1 => r - q, size(p,r) - size(left) = r - p + 1 - (q - p + 1) => r - q
   T[] right = new T[r - q];
 
-  //Copying elements from idx p to r (original array) into left partition 
+  //Copying elements from idx p to q (original array) into left partition 
   for(int i = 0; i < left.Length; ++i)
   {
     left[i] = array[p + i];
   }
-
+  
+  //Copying elements from idx q + 1 to r (original array) into right partition 
   for(int j = 0; j < right.Length; ++j)
   {
     right[j] = array[q + 1 + j];
@@ -363,45 +365,6 @@ static void SelectionSort<T>(T[] array) where T : IComparable<T>{
         array[i] = array[tmpMinIdx];
         array[tmpMinIdx] = tmp;
       }
-    }
-}
-
-static void BubbleSortInt(int[] arr) {
-    if(arr== null || arr.Length <= 1) return;
-    bool swapped = false;
-    int n = arr.Length;
-    do{
-        swapped = false;
-        for(int i = 0; i <= n - 2; ++i){ 
-           if(arr[i] > arr[i + 1]){ 
-            //----swap:-----
-            var temp = arr[i + 1];
-            arr[i + 1] = arr[i];
-            arr[i] = temp;
-            //--------------
-            swapped = true;
-           }
-
-        }
-        n--;
-    }
-    while(swapped); // while(n >= 2); => NOT Adaptive!
-}
-
-static void InsertionSortInt(int[] arr) {
-    if(arr== null || arr.Length <= 1) return;
-
-    for(int j = 1; j <= arr.Length - 1; ++j){
-        
-        int key = arr[j];
-        int i = j - 1;
-
-        while(i >= 0 && arr[i] > key){
-            arr[i + 1] = arr[i];
-            i--;
-        }
-        arr[i + 1] = key;
-
     }
 }
 
@@ -468,7 +431,6 @@ static void InsertionSort<T>(T[] arr) where T : IComparable<T> {
 
     }
 }
-
 
 static void SelectionSort_<T>(T[] array) where T : IComparable<T>{
     if(array == null || array.Length == 0) return;

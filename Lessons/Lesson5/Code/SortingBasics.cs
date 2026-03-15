@@ -91,12 +91,12 @@ public static class SortingBasics<T> where T : IComparable<T>
 		//size(low, high) - size(left) = high - low + 1 - (middle - low + 1) => high - middle
 		T[] right = new T[high - middle];
 
-		//Copying elements from idx p to r (original array) into left partition 
+		//Copying elements from idx low to middle (original array) into left partition 
 		for(int i = 0; i < left.Length; ++i)
 		{
 			left[i] = array[low + i];
 		}
-
+		//Copying elements from idx middle + 1 to high (original array) into right partition 
 		for(int j = 0; j < right.Length; ++j)
 		{
 			right[j] = array[middle + 1 + j];

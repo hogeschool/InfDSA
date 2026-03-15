@@ -142,12 +142,13 @@ public static class Sorting<T> where T : IComparable<T>
 		//size: r - (q + 1) + 1 => r - q, size(p,r) - size(left) = r - p + 1 - (q - p + 1) => r - q
 		T[] right = new T[r - q];
 
-		//Copying elements from idx p to r (original array) into left partition 
+		//Copying elements from idx p to q (original array) into left partition 
 		for(int i = 0; i < left.Length; ++i)
 		{
 			left[i] = array[p + i];
 		}
-
+          
+		//Copying elements from idx q + 1 to r (original array) into right partition 
 		for(int j = 0; j < right.Length; ++j)
 		{
 			right[j] = array[q + 1 + j];
@@ -241,12 +242,13 @@ public static class Sorting<T> where T : IComparable<T>
 		//size: r - (q + 1) + 1 => r - q, size(p,r) - size(left) = r - p + 1 - (q - p + 1) => r - q
 		T[] right = new T[r - q];
 
-		//Copying elements from idx p to r (original array) into left partition 
+		//Copying elements from idx p to q (original array) into left partition 
 		for(int i = 0; i < left.Length; ++i)
 		{
 			left[i] = array[p + i];
 		}
-
+        
+		//Copying elements from idx q + 1 to r (original array) into right partition 
 		for(int j = 0; j < right.Length; ++j)
 		{
 			right[j] = array[q + 1 + j];
