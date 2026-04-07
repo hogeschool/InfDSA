@@ -273,6 +273,38 @@ public class HashTable<K, V> : IHashTable<K, V>
         return false;
     }
 
+    public bool Delete_BackwardShifting(K key) {    
+    
+        int initialIdx = FindIndex(key);
+        if (initialIdx == -1) return false; // key not found 
+        // Remove the entry at initialIdx 
+        buckets[initialIdx] = null;
+        var emptyIdx = initialIdx;
+        Count--; 
+        int nextIdx = (emptyIdx + 1) % Size; 
+        while (buckets[nextIdx] != null) { 
+            int hashIdx = getIndex(buckets[nextIdx].Key); 
+            // ideal position of element at nextIdx 
+            // Check whether hashIdx is still reachable without passing emptyIdx 
+            bool inRange = (emptyIdx < hashIdx && hashIdx <= nextIdx) ||
+                           (nextIdx < emptyIdx && emptyIdx < hashIdx) || 
+                           (hashIdx <= nextIdx && nextIdx < emptyIdx);
+            //outRange => unreachable => shift necessary
+            bool outOfRange =  hashIdx  <= emptyIdx && emptyIdx < nextIdx ||
+                               nextIdx <= hashIdx && hashIdx < emptyIdx ||
+                               emptyIdx <= nextIdx && nextIdx < hashIdx
+                            ;
+            if (!inRange) { 
+                // Shift element at nextIdx back into emptyIdx 
+                buckets[emptyIdx] = buckets[nextIdx]; 
+                buckets[nextIdx] = null; 
+                // Now the new empty slot is at nextIdx 
+                emptyIdx = nextIdx; } 
+            nextIdx = (nextIdx + 1) % Size; 
+        } 
+        return true; 
+    }
+
     void localRehash(int index)
     {
         var nextIndex = (index + 1) % buckets.Length;
