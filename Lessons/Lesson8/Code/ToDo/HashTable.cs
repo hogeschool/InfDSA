@@ -33,6 +33,16 @@ public class HashTable<K, V> : IHashTable<K, V>
         return index;
     }
 
+    Func<int, int> probingFuncLinear(int index)
+    {    
+        return (int i) => (index + i) % buckets.Length;
+    }
+
+    Func<int, int> probingFuncQuadratic(int index)
+    {    
+        return (int i) => (index + i * i) % buckets.Length;
+    }
+
     // public bool Add_(K key, V value) {
     //     var res = insert(new Entry<K, V>(key, value), buckets, Count);
     //     Count = res.Item2;
@@ -68,6 +78,42 @@ public class HashTable<K, V> : IHashTable<K, V>
                 return false;
             }
             potentialIndex = (potentialIndex + 1) % buckets.Length;
+        }
+
+        return false;
+    }
+
+    public bool Add_ProbingFunc(K key, V value) {
+        if(buckets == null || buckets.Length == 0 || key == null) return false;
+        int index = getIndex(key);
+        if (buckets[index] == null) //empty slot
+        {
+            buckets[index] = new Entry<K, V>(key, value);
+            Count++;
+            return true;
+        }
+        if (buckets[index].Key.Equals(key)) // no duplications
+        {
+            return false;
+        }
+        
+        int i = 1; //First attempt
+        while(i < buckets.Length)
+        {
+            int potentialIndex = probingFuncLinear(index)(i); //(index + i) % buckets.Length; //linear probing
+            if (buckets[potentialIndex] == null) //empty slot
+            {
+                buckets[potentialIndex] = new Entry<K, V>(key, value);
+                Count++;
+                return true;    
+            }
+
+            if (buckets[potentialIndex].Key.Equals(key)) // no duplications
+            {
+                return false;
+            }
+            
+            i++;
         }
 
         return false;
