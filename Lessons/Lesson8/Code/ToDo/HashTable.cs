@@ -11,7 +11,7 @@ public class HashTable<K, V> : IHashTable<K, V>
 
     public ReadOnlyCollection<Entry<K, V>> data => buckets == null? null : buckets.AsReadOnly();
 
-    public HashTable() { buckets = null; }
+    public HashTable() { buckets = new Entry<K, V>[10]; }
 
     public HashTable(Entry<K, V>[]? input) { importData(input); }
     public HashTable(ICollection<Entry<K, V>>? input) { importData(input);}
