@@ -35,6 +35,6 @@ public class StackLL<T> : IStack<T>
     return new Some<T>(Top.Value); 
   }
 
-  int computeCount<T>(Node<T> node) => (node == null) ? 0 : 1 + computeCount(node.Next);
+  int computeCount(Node<T> node) => (node == null) ? 0 : 1 + computeCount(node.Next);
 
 }
