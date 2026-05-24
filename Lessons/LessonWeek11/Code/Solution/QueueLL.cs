@@ -70,7 +70,7 @@ public class QueueLL<T> : IQueue<T>
         return total;
     }
 
-    int computeCount<T>(Node<T> node, int total) => (node == null) ? total : 
+    int computeCount(Node<T> node, int total) => (node == null) ? total : 
                                                     computeCount(node.Next, total + 1);
 
 }
