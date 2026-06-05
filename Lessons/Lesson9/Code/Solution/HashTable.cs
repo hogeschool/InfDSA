@@ -60,25 +60,27 @@ public class HashTable<K, V> : IHashTable<K, V>
             return true;
         }
         // we have to do probing to find an empty bucket
+    
+        var potentialIndex = (index + 1) % buckets.Length;
+
+        while (potentialIndex != index)
         {
-            var potentialIndex = (index + 1) % buckets.Length;
-
-            while (potentialIndex != index)
+            if(buckets[potentialIndex] == null || 
+                buckets[potentialIndex].State == Status.deleted)
             {
-                if(buckets[potentialIndex] == null || 
-                   buckets[potentialIndex].State == Status.deleted)
-                {
-                    buckets[potentialIndex] = new Entry<K, V>(key, value);
-                    count++;
-                    if(buckets[potentialIndex].State == Status.deleted)
-                       numDeletions--;
-                    return true;
-                }
-                potentialIndex = (potentialIndex + 1) % buckets.Length; //probingFuncLinear(potentialIndex)(1);
-            }
+                if(buckets[potentialIndex] != null && 
+                    buckets[potentialIndex].State == Status.deleted)
+                    numDeletions--;
+                buckets[potentialIndex] = new Entry<K, V>(key, value);
+                count++;
 
-            return false;         
+                return true;
+            }
+            potentialIndex = (potentialIndex + 1) % buckets.Length; //probingFuncLinear(potentialIndex)(1);
         }
+
+        return false;         
+
     }
 
     public bool Add_ProbingFunc(K key, V value)
@@ -109,10 +111,12 @@ public class HashTable<K, V> : IHashTable<K, V>
             if(buckets[potentialIndex] == null || 
                 buckets[potentialIndex].State == Status.deleted)
             {
+                if(buckets[potentialIndex] != null && 
+                   buckets[potentialIndex].State == Status.deleted)
+                        numDeletions--;
                 buckets[potentialIndex] = new Entry<K, V>(key, value);
                 count++;
-                if(buckets[potentialIndex].State == Status.deleted)
-                    numDeletions--;
+
                 return true;
             }
 
@@ -146,30 +150,30 @@ public class HashTable<K, V> : IHashTable<K, V>
         //     return false;
 
         //else // we have to do probing to find an empty bucket
+
+        var potentialIndex = (index + 1) % buckets.Length;
+
+        while (buckets[potentialIndex] != null && potentialIndex != index)
         {
-            var potentialIndex = (index + 1) % buckets.Length;
-
-            while (buckets[potentialIndex] != null && potentialIndex != index)
-            {
-                if(buckets[potentialIndex].State == Status.deleted)
-                {
-                    buckets[potentialIndex] = new Entry<K, V>(key, value);
-                    count++;
-                    numDeletions--;
-                    return true;
-                }
-                potentialIndex = (potentialIndex + 1) % buckets.Length;
-            }
-
-            if(buckets[potentialIndex] == null)
+            if(buckets[potentialIndex].State == Status.deleted)
             {
                 buckets[potentialIndex] = new Entry<K, V>(key, value);
                 count++;
+                numDeletions--;
                 return true;
-            }  
-
-            return false;         
+            }
+            potentialIndex = (potentialIndex + 1) % buckets.Length;
         }
+
+        if(buckets[potentialIndex] == null)
+        {
+            buckets[potentialIndex] = new Entry<K, V>(key, value);
+            count++;
+            return true;
+        }  
+
+        return false;         
+        
     }
 
     public bool Add___(K key, V value)
@@ -196,24 +200,24 @@ public class HashTable<K, V> : IHashTable<K, V>
         //     return false;
 
         //else // we have to do probing to find an empty bucket
+    
+        var potentialIndex = (index + 1) % buckets.Length;
+        while (buckets[potentialIndex] != null &&  
+                buckets[potentialIndex].State != Status.deleted) // the bucket in position potentialIndex is not empty
         {
-            var potentialIndex = (index + 1) % buckets.Length;
-            while (buckets[potentialIndex] != null &&  
-                   buckets[potentialIndex].State != Status.deleted) // the bucket in position potentialIndex is not empty
-            {
-                if (potentialIndex == index) //|| buckets[potentialIndex].Key.Equals(key)) 
-                      return false;
-                potentialIndex = (potentialIndex + 1) % buckets.Length;
-            }
-            if(buckets[potentialIndex] == null)
-              count++;
-            else{ 
-              count++;
-              numDeletions--;
-            }
-            buckets[potentialIndex] = new Entry<K, V>(key, value);
-            return true;        
+            if (potentialIndex == index) //|| buckets[potentialIndex].Key.Equals(key)) 
+                    return false;
+            potentialIndex = (potentialIndex + 1) % buckets.Length;
         }
+        if(buckets[potentialIndex] == null)
+            count++;
+        else{ 
+            count++;
+            numDeletions--;
+        }
+        buckets[potentialIndex] = new Entry<K, V>(key, value);
+        return true;        
+    
     }
 
     public V? Find(K key)
