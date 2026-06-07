@@ -6,7 +6,7 @@ The course blends theory, coding labs, and case-based learning to simulate real-
 
 The objective of the course is to develop a programming solutions with efficiency (time and memory) in mind. A program by definition involves processing data, and to store that data efficiently, one must use appropriate data structures along with efficient algorithms. A "good" program is defined as one that minimizes memory usage and completes tasks in the least amount of time. Although execution time may vary based on the machine's processing power and available resources, an understanding of performance analysis—particularly complexity analysis—is essential. 
 
-- **Coure Manual** [here](./InfDsa01-CourseManual.pdf)  and can also be found in the class teams.
+- **Course Manual** [here](./InfDsa01-CourseManual.pdf)  and can also be found in the class teams.
 - **Project** 
   - [**Project 1**](./InfDsa01-CourseManual.pdf) 
   - [**Project 1**](./InfDsa01-CourseManual.pdf) 
